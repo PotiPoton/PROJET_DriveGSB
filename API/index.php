@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie('auth_token', urlencode($token), time() + 900, '/', '.drivegsb.local', true, true/*, 'SameSite=None'*/);
             }
 
-            echo json_encode(['status' => 'success', 'goTo' => 'home']);
+            echo json_encode(['status' => 'success', 'goTo' => 'navbar']);
         } catch(Exception $e) {
             http_response_code(401); // Code d'erreur
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
