@@ -25,7 +25,7 @@ async function home() {
 async function showUsers() {
     let users = await home();
     if (users === 'login') {
-        document.getElementById('home').remove();
+        document.getElementById('nav').remove();
         document.body.appendChild(createEntireElement('script', {src: './login.js'}));
         throw new Error('user not logged (token invalid or null)');
     }
