@@ -1,5 +1,12 @@
 <?php
-// include_
+
+/*----------------------------------------------------------------------------- /
+/                                                                               /
+/                                   Login                                       /
+/                                                                               /
+/------------------------------------------------------------------------------*/
+
+include_once '.envAccess.php';
 
 function base64UrlEncode($data) {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
@@ -76,32 +83,78 @@ function checkTokenBool($jwt) {
     return true;
 }
 
-//!OLD
-// function login($lgn, $pwd) {
-//     $url = 'http://localhost/GSB/loginGSB/API/';
+/*----------------------------------------------------------------------------- /
+/                                                                               /
+/                                    Data                                       /
+/                                                                               /
+/------------------------------------------------------------------------------*/
 
-//     $ch = curl_init($url);
+function getFolderStructure($dirPath) {
+    $structure = [];
+    $items = scandir($dirPath); // Récupère tous les éléments du dossier
 
-//     curl_setopt($ch, CURLOPT_POST, true); // Méthode POST
-//     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['lgn' => $lgn, 'pwd' => $pwd])); // Corps de la requête
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retourner la réponse sous forme de chaîne
-//     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-//         'Content-Type: application/x-www-form-urlencoded' // Définir les en-têtes
-//     ]);
+    if (!$items) throw new Exception('Aucun éléments existant');
 
-//     $response = curl_exec($ch);
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
 
-//     if (curl_errno($ch)) {
-//         throw new Exception('Erreur cURL : '.curl_error($ch));
-//     }
+        $itemPath = $dirPath . DIRECTORY_SEPARATOR . $item;
+        $info = [
+            'name' => $item,
+            // 'path' =>realpath($itemPath),
+            'size' => formatSize(filesize($itemPath)),
+            'lastModified' => date('Y-m-d H:i:s', filemtime($itemPath))
+        ];
 
-//     curl_close($ch);
+        if (is_dir($itemPath)) {
+            $info['type'] = 'folder';
+            // $info['children'] = getFolderStructure($itemPath);
+            $info['size'] = formatSize(getFolderSize($itemPath));
+        } else {
+            $info['type'] = 'file';
+        }
 
-//     $data = json_decode($response);
+        $structure[] = $info;
+    }
 
-//     if ($data->status === 'error') throw new Exception($data->message());
-// }
+    return $structure;
+}
 
+function formatSize($size) {
+
+    // if (!$size) throw new Exception('API/functions.php/formatSize() => size is null');
+
+    $units = ['o', 'Ko', 'Mo', 'Go', 'To'];
+    $unitIndex = 0;
+
+    while ($size >= 1024 && $unitIndex < count($units) - 1) {
+        $size /= 1024;
+        $unitIndex++;
+    }
+
+    return round($size, 2) . ' ' . $units[$unitIndex];
+}
+
+function getFolderSize($dirPath) {
+    $totalSize = 0;
+    $items = scandir($dirPath);
+
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+
+        $itemPath = $dirPath . DIRECTORY_SEPARATOR . $item;
+
+        if (is_dir($itemPath)) {
+            // Récursion pour calculer la taille des sous-dossiers
+            $totalSize += getFolderSize($itemPath);
+        } else {
+            // Ajouter la taille du fichier
+            $totalSize += filesize($itemPath);
+        }
+    }
+
+    return $totalSize;
+}
 
 
 ?>

@@ -51,9 +51,13 @@ CREATE TABLE regional_manager (
 CREATE TABLE resource (
     idersc INT AUTO_INCREMENT PRIMARY KEY,
     nmersc VARCHAR(255),
-    tpe VARCHAR(20),
+    tpe ENUM('file', 'folder'),
+    sze DECIMAL(25,2),
+    lstmod DATETIME,
     ideusr VARCHAR(5) NOT NULL,
-    FOREIGN KEY (ideusr) REFERENCES user(ideusr)
+    ideprt INT,
+    FOREIGN KEY (ideusr) REFERENCES user(ideusr),
+    FOREIGN KEY (ideprt) REFERENCES resource(ideprt)
 );
 
 CREATE TABLE type_right (

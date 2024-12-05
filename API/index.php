@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include_once("./WebService.php");
     
     $users = new Users();
+    $resource = new Resource('C:\\Users\\PotiPoton\\Documents\\Informatique\\Arbo de test');
+    // $files = new File();
     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     
     /*----------------------------------------------------------------------------- /
@@ -67,19 +69,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /                                   Data                                        /
     /                                                                               /
     /------------------------------------------------------------------------------*/
-    // Users list without pwd 
-    else if ($requestUri === '/index.php/users') {
+    
+    else if ($requestUri === '/index.php/updateFileStructure') {
         $token = $_COOKIE['auth_token'] ?? null;
         
         try {
             checkToken($token);
-            $allUsers = $users->showUsers();
-            echo json_encode(['status' => 'success', 'users' => $allUsers]);
+            $resource->updateFileStructure();
+            echo json_encode(['status' => 'success']);
         } catch (Exception $e) {
             http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
+        
     }
+    
+    
+    
+    //! useless
+    //* Users list without pwd 
+    // else if ($requestUri === '/index.php/users') {
+    //     $token = $_COOKIE['auth_token'] ?? null;
+        
+    //     try {
+    //         checkToken($token);
+    //         $allUsers = $users->showUsers();
+    //         echo json_encode(['status' => 'success', 'users' => $allUsers]);
+    //     } catch (Exception $e) {
+    //         http_response_code(401);
+    //         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    //     }
+    // }
        
 }
 
