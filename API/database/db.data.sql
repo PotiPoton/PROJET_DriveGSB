@@ -1,5 +1,5 @@
 INSERT INTO user (ideusr, lnm, fnm, lgn, tempclearpwd) VALUES 
---visitor--
+-- visitor
 ('a131', 'Villechalane', 'Louis', 'lvillachane', 'jux7g'),
 ('a17', 'Andre', 'David', 'dandre', 'oppg5'),
 ('a55', 'Bedos', 'Christian', 'cbedos', 'gmhxd'),
@@ -27,11 +27,27 @@ INSERT INTO user (ideusr, lnm, fnm, lgn, tempclearpwd) VALUES
 ('f21', 'Finck', 'Jacques', 'jfinck', 'mpb3t'),
 ('f39', 'Frémont', 'Fernande', 'ffremont', 'xs5tq'),
 ('f4', 'Gest', 'Alain', 'agest', 'dywvt'),
---accountant--
-('ac1', 'Dumoulin', 'Alphonse', 'adumoulin', 'oppg6');
+-- accountant
+('ac1', 'Dumoulin', 'Alphonse', 'adumoulin', 'oppg6'),
+-- regional_manager
+('sp8', 'Marsh', 'Randy', 'rmarsh', 'p@ssword'),
+('tb1', 'Croft', 'Lara', 'lcroft', 'p@ssword'),
+('cp1', 'Welles', 'Jacky', 'jwelles', 'p@ssword'),
+-- patient
+('sp1', 'Cartman', 'Éric', 'ecartman', 'p@ssword'),
+('sp2', 'Marsh', 'Stan', 'smarsh', 'p@ssword'),
+('sp3', 'Broflovski', 'Kyle', 'kbroflovski', 'p@ssword'),
+('sp4', 'McCormick', 'Kenny', 'kmccormick', 'p@ssword'),
+('sp5', 'Stotch', 'Butters', 'bstotch', 'p@ssword'),
+('sp6', 'Black', 'Tolkien', 'tblack', 'p@ssword'),
+('sp7', 'Pirrup', 'Philip', 'ppirrup', 'p@ssword'),
+-- doctor
+('cp2', 'Vektor', 'Viktor', 'vvektor', 'p@ssword'),
+('si1', 'Hibbert', 'Julius', 'jhibbert', 'p@ssword'),
+('fu1', 'Zoidbert', 'john', 'jzoidbert', 'p@ssword');
 
 INSERT INTO employee (ideemp, adr, pstcde, cty, hredte) VALUES
---visitor--
+-- visitor
 ('a131', '8 rue des Charmes', '46000', 'Cahors', '2005-12-21'),
 ('a17', '1 rue Petit', '46200', 'Lalbenque', '1998-11-23'),
 ('a55', '1 rue Peranud', '46250', 'Montcuq', '1995-01-12'),
@@ -59,8 +75,12 @@ INSERT INTO employee (ideemp, adr, pstcde, cty, hredte) VALUES
 ('f21', '10 avenue du Prado', '13002', 'Marseille', '2001-11-10'),
 ('f39', '4 route de la mer', '13012', 'Allauh', '1998-10-01'),
 ('f4', '30 avenue de la mer', '13025', 'Berre', '1985-11-01'),
---accountant--
+-- accountant
 ('ac1', '12 rue des martyrs de la résistance', '93100', 'Montreuil', '1995-12-21');
+-- regional_manager
+('sp8', '15 Pioneer Avenue', '80205', 'Denver', '2015-06-01'),
+('tb1', 'Croft Manor, Surrey', '50247', 'London', '2010-03-15'),
+('cp1', '23 Night City Ave', '91302', 'Night City', '2020-01-01');
 
 INSERT INTO visitor VALUES
 ('a131'),
@@ -93,3 +113,22 @@ INSERT INTO visitor VALUES
 
 INSERT INTO accountant VALUES
 ('ac1');
+
+INSERT INTO regional_manager VALUES
+('sp8'),
+('tb1'),
+('cp1');
+
+INSERT INTO patient VALUES
+('sp1'),
+('sp2'),
+('sp3'),
+('sp4'),
+('sp5'),
+('sp6'),
+('sp7');
+
+INSERT INTO doctor VALUES
+('cp2'),
+('si1'),
+('fu1');
