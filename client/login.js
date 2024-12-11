@@ -35,7 +35,7 @@ async function login(lgn, pwd) {
 
 function form_login() {
 
-    document.head.title = 'Login'
+    document.title = 'Connexion'
     let div = createEntireElement('div', {id: 'form_login', class: 'cnt center box medium'});
     let h2 = createEntireElement('h2', {innerText: 'Connexion'});
     let form = createEntireElement('form', {action: '', method: 'post'});

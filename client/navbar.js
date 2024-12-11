@@ -54,10 +54,11 @@ function checkLogin(data){
 }
 
 async function navbar(){
+    
     let user = await getUser();
     try { checkLogin(user); } catch (error) { throw error; }
     
-
+    document.title = 'Accueil';
     let navElements = {
         "home": "Accueil"
     }
