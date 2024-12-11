@@ -26,7 +26,7 @@ h4 { font-style: normal; font-weight: bold; }
 
 /** Liens */
 a{ text-decoration: none; color: #c4c4c4; transition: color 0.5s ease}
-a:hover{ text-decoration: none; color: #ffffff; }
+a:hover{ text-decoration: none; color: #ffffff; cursor: pointer;}
 
 /** Navbar */
 #navbar { position: fixed; width: 250px; top: 0; left: 0; height: 100%;
