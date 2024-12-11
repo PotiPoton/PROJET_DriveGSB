@@ -52,12 +52,12 @@ CREATE TABLE resource (
     idersc INT AUTO_INCREMENT PRIMARY KEY,
     nmersc VARCHAR(255),
     tpe ENUM('file', 'folder'),
-    sze DECIMAL(25,2),
+    sze INT,
     lstmod DATETIME,
     ideusr VARCHAR(5) NOT NULL,
     ideprt INT,
     FOREIGN KEY (ideusr) REFERENCES user(ideusr),
-    FOREIGN KEY (ideprt) REFERENCES resource(ideprt)
+    FOREIGN KEY (ideprt) REFERENCES resource(idersc)
 );
 
 CREATE TABLE type_right (

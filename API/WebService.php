@@ -17,6 +17,13 @@ class Users {
         return $user;
     }
 
+    public function getUser($token) {
+        $ide = getIdeFromToken($token);
+        $user = Dialog::getUserByIde($ide);
+
+        return $user;
+    }
+
     public function showUsers() {
         $users = Dialog::getUsers();
 
@@ -58,7 +65,8 @@ class Resource {
             $itemPath = $dirPath . DIRECTORY_SEPARATOR . $item;
             $itemType = is_dir($itemPath) ? 'folder' : 'file';
             $lastModified = date('Y-m-d H:i:s', filemtime($itemPath));
-            $size = $itemType == 'folder' ? formatSize(getFolderSize($itemPath)) : formatSize(filesize($itemPath));
+            // Ici pas de formatSize(); car cela retournerais "0 o" par ex, or pour la db c'est INT et non VARCAHR
+            $size = $itemType == 'folder' ? getFolderSize($itemPath) : filesize($itemPath);
     
             // Vérifier si l'élément existe déjà dans la base de données
             $result = Dialog::checkIfResourceExists($item, $parentId);
@@ -73,7 +81,7 @@ class Resource {
     
             // Si c'est un dossier, on appelle récursivement pour ses sous-dossiers et fichiers
             if ($itemType === 'folder') {
-                updateFileStructure($itemPath, $id);
+                $this->updateFileStructure($itemPath, $id);
             }
         }
     
@@ -90,8 +98,8 @@ class Resource {
 
     
         $existingItems = [];
-        while ($row = $result->fetch_assoc()) {
-            $existingItems[$row['id']] = $row['name'];
+        foreach ($result as $row) {
+            $existingItems[$row['idersc']] = $row['nmersc'];  
         }
     
         // Trouver les éléments supprimés

@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // $files = new File();
     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     
+
+
     /*----------------------------------------------------------------------------- /
     /                                                                               /
     /                                  Login                                        /
@@ -70,6 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /                                                                               /
     /------------------------------------------------------------------------------*/
     
+    else if ($requestUri === '/index.php/user') {
+        $token = $_COOKIE['auth_token'] ?? null;
+
+        try {
+            // checkToken($token);
+            $user = $users->getUser($token);
+            echo json_encode(['status' => 'success', 'user' => $user]);
+        } catch (Exception $e) {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
     else if ($requestUri === '/index.php/updateFileStructure') {
         $token = $_COOKIE['auth_token'] ?? null;
         
@@ -100,6 +115,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     //     }
     // }
+
+    /*----------------------------------------------------------------------------- /
+    /                                                                               /
+    /                               Hash Password                                   /
+    /                                                                               /
+    /------------------------------------------------------------------------------*/
+
+    else if ($requestUri === '/index.php/set_hash_password') {
+        try { 
+            $users->setHashPwd();
+            echo json_encode(['status' => 'success', 'message' => 'Les mots de passe hashé ont bien été définit !']);
+        } catch(Exception $e) {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
        
 }
 

@@ -31,14 +31,12 @@ function getToken($user) {
     return "$header.$payload.$signature";
 }
 
+
+
 function checkToken($jwt) {
     if (!$jwt) throw new Exception('no token');
 
-    try {
-        loadEnv('./.env');
-    } catch (Exception $e) {
-        throw $e;
-    }
+    try { loadEnv('./.env'); } catch (Exception $e) { throw $e; }
 
     $secretKey = getenv('SECRET_KEY');
 
@@ -58,29 +56,54 @@ function checkToken($jwt) {
 }
 
 function checkTokenBool($jwt) {
-    if (!$jwt) return false;
-
     try {
-        loadEnv('./.env');
+        checkToken($jwt);
+        return true;
     } catch (Exception $e) {
-        throw $e;
-    }
-
-    $secretKey = getenv('SECRET_KEY');
-
-    [$header, $payload, $signature] = explode('.', $jwt);
-
-    if (!$header || !$payload || !$signature) {
         return false;
     }
 
-    $expectedSignature = hash_hmac('sha256', "$header.$payload", $secretKey);
-    if ($signature !== $expectedSignature) return false;
+    // if (!$jwt) return false;
 
+    // try {
+    //     loadEnv('./.env');
+    // } catch (Exception $e) {
+    //     throw $e;
+    // }
+
+    // $secretKey = getenv('SECRET_KEY');
+
+    // [$header, $payload, $signature] = explode('.', $jwt);
+
+    // if (!$header || !$payload || !$signature) {
+    //     return false;
+    // }
+
+    // $expectedSignature = hash_hmac('sha256', "$header.$payload", $secretKey);
+    // if ($signature !== $expectedSignature) return false;
+
+    // $payload = json_decode(base64UrlDecode($payload), true);
+    // if (isset($payload['exp']) && time() > $payload['exp']) return false;
+
+    // return true;
+}
+
+function getIdeFromToken($jwt) {
+    try { checkToken($jwt); } catch (Exception $e) { throw $e; }
+    
+    // Découper le token pour obtenir la partie payload
+    [$header, $payload, $signature] = explode('.', $jwt);
+
+    // Décoder la partie payload
     $payload = json_decode(base64UrlDecode($payload), true);
-    if (isset($payload['exp']) && time() > $payload['exp']) return false;
 
-    return true;
+    // Vérifier que l'id utilisateur (ideusr) est bien présent
+    if (!isset($payload['ideusr'])) {
+        throw new Exception("Error 'functions.php/getIdeFromToken' - payload['idesur'] is null or empty");
+    }
+
+    // Retourner l'id utilisateur
+    return $payload['ideusr'];
 }
 
 /*----------------------------------------------------------------------------- /
@@ -109,7 +132,8 @@ function getFolderStructure($dirPath) {
         if (is_dir($itemPath)) {
             $info['type'] = 'folder';
             // $info['children'] = getFolderStructure($itemPath);
-            $info['size'] = formatSize(getFolderSize($itemPath));
+            // Ici pas de formatSize(getFolderSize($itemPath)); car cela retournerais "0 o" par ex, or pour la db c'est INT et non VARCAHR
+            $info['size'] = getFolderSize($itemPath);
         } else {
             $info['type'] = 'file';
         }

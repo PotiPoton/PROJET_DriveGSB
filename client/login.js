@@ -48,7 +48,6 @@ function form_login() {
             let lgn = document.getElementById('lgn').value;
             let pwd = document.getElementById('pwd').value;
             try {
-                
                 if (!lgn || !pwd) throw new Error('Veuillez remplir tous les champs !'); 
                 let goTo = await login(lgn, pwd);
                 
@@ -57,12 +56,9 @@ function form_login() {
 
                 let index = createEntireElement('script', {src: `./${goTo}.js`});
                 document.body.appendChild(index);
-                //TODO: Affichage de la page d'acceuil (avec goTo)
-                return;
             } catch(error) {
                 console.error('ERREUR', error.message);
                 alert(error.message);
-                return;
             }
         }
     });

@@ -6,7 +6,8 @@ class Dialog {
 
     public static function getUsers() {
         $con = Connect::DbConnect();
-        $query = "SELECT ideusr, lgn, lnm, fnm FROM user";
+        // Décommenter tempclearpwd pour set les mots de passe hashés
+        $query = "SELECT ideusr, lgn, lnm, fnm/*, tempclearpwd*/ FROM user";
         $sth = $con->prepare($query);
         $sth->execute();
         $result = $sth->fetchAll(PDO::FETCH_CLASS);
@@ -29,6 +30,19 @@ class Dialog {
         return $result;
     }
 
+    public static function getUserByIde($ide) {
+        $con = Connect::DbConnect();
+        $query = "SELECT ideusr, lgn, fnm, lnm FROM user WHERE ideusr=:ideusr";
+        $sth = $con->prepare($query);
+        $sth->bindParam(':ideusr', $ide);
+        $sth->execute();
+        $result = $sth->fetch(PDO::FETCH_OBJ);
+
+        if (!$result) throw new Exception("Error 'db.Dialog.php/getUserByIde()' - result is null");
+
+        return $result;
+    }
+
     public static function setHashPwd($id, $newPwd){
         try {
             $con = Connect::DbConnect();
@@ -45,10 +59,11 @@ class Dialog {
 
     public static function checkIfResourceExists($item, $parentId) {
         $con = Connect::DbConnect();
-        $query = "SELECT * FROM resource WHERE nmersc=:item AND ideprt=:parentId";
+        if ($parentId) $query = "SELECT * FROM resource WHERE nmersc=:item AND ideprt=:parentId";
+        else $query = "SELECT * FROM resource WHERE nmersc=:item";
         $stmt = $con->prepare($query);
         $stmt->bindParam(':item', $item);
-        $stmt->bindParam(':parentId', $parentId);
+        if ($parentId) $stmt->bindParam(':parentId', $parentId);
         // $stmt->bind_param('si', $item, $parentId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_OBJ);
@@ -59,8 +74,7 @@ class Dialog {
     public static function updateResource($result, $size, $lastModified) {
         try {
             $con = Connect::DbConnect();
-            $row = $result->fetch_assoc();
-            $id = $row['id'];
+            $id = $result->idersc;
 
             if (!$id) throw new Exception("Error 'db.Dialog.php/updateResource()' - id is null");
 
@@ -78,19 +92,21 @@ class Dialog {
         }
     }
 
-    public static function insertResource($parentId, $item, $itemType, $size, $lastModified) {
+    public static function insertResource($parentId, $item, $itemType, $size, $lastModified, $ideusr = 'sp8') {
         try {
             $con = Connect::DbConnect();
-            $query = "INSERT INTO resource (ideprt, nmersc, tpe, sze, lstmod) VALUES (:ideprt, :nmersc, :tpe, :sze, :lstmod)";
+            $query = "INSERT INTO resource (ideprt, nmersc, tpe, sze, lstmod, ideusr) 
+                VALUES (:ideprt, :nmersc, :tpe, :sze, :lstmod, :ideusr)";
             $stmt = $con->prepare($query);
             $stmt->bindParam(':ideprt', $parentId);
             $stmt->bindParam(':nmersc', $item);
             $stmt->bindParam(':tpe', $itemType);
             $stmt->bindParam(':sze', $size);
             $stmt->bindParam(':lstmod', $lastModified);
+            $stmt->bindParam(':ideusr', $ideusr);
             // $stmt->bind_param('issss', $parentId, $item, $itemType, $size, $lastModified);
             $stmt->execute();
-            $id = $stmt->insert_id;  // Récupérer l'ID du dossier ajouté
+            $id = $con->lastInsertId();  // Récupérer l'ID du dossier ajouté
 
             if (!$id) throw new Exception("Error 'db.Dialog.php/insertResource()' - id is null");
 
@@ -107,9 +123,10 @@ class Dialog {
         $stmt->bindParam(':ideprt', $parentId);
         // $stmt->bind_param('i', $parentId);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!$result) throw new Exception("Error 'db.Dialog.php/getExistingResource()' - result is null");
+        // Peut importe si $result est null, un dossier peut être vide !
+        // if (!$result) throw new Exception("Error 'db.Dialog.php/getExistingResource()' - result is null");
 
         return $result;
     }
