@@ -101,7 +101,7 @@ a:hover{ text-decoration: none; color: #ffffff; cursor: pointer;}
     max-width: 100%; }
 
 /** Générique quand navbar */
-.cnt.content { position: relative; margin: 0 0 0 250px; padding-top: 40px; min-height: 100%;
+.cnt#content { position: relative; margin: 0 0 0 250px; padding-top: 40px; min-height: 100%;
     box-sizing: border-box; width: auto; }
 
 /** Messages (temp->javascript) */

@@ -4,6 +4,12 @@ include_once 'db.Connect.php';
 
 class Dialog {
 
+/*----------------------------------------------------------------------------- /
+/                                                                               /
+/                                    User                                       /
+/                                                                               /
+/------------------------------------------------------------------------------*/
+
     public static function getUsers() {
         $con = Connect::DbConnect();
         // Décommenter tempclearpwd pour set les mots de passe hashés
@@ -56,6 +62,12 @@ class Dialog {
             throw new Exception("Error 'db.Dialog.php/setHashPwd()' - ".$e->getMessage());
         }
     }
+
+/*----------------------------------------------------------------------------- /
+/                                                                               /
+/                                 Resource                                      /
+/                                                                               /
+/------------------------------------------------------------------------------*/
 
     public static function checkIfResourceExists($item, $parentId) {
         $con = Connect::DbConnect();
@@ -116,33 +128,52 @@ class Dialog {
         }
     }
 
-    public static function getExistingResource($parentId) {
+    public static function getRootContent() {
         $con = Connect::DbConnect();
-        $query = "SELECT idersc, nmersc FROM resource WHERE ideprt=:ideprt";
+        $query = "SELECT * FROM resource WHERE ideprt IS NULL";
         $stmt = $con->prepare($query);
-        $stmt->bindParam(':ideprt', $parentId);
-        // $stmt->bind_param('i', $parentId);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Peut importe si $result est null, un dossier peut être vide !
-        // if (!$result) throw new Exception("Error 'db.Dialog.php/getExistingResource()' - result is null");
-
         return $result;
     }
 
-    public static function deleteResource($id) {
-        try {
-            $con = Connect::DbConnect();
-            $query = "DELETE FROM resource WHERE idersc=:idersc";
-            $stmt = $con->prepare($query);
-            $stmt->bindParam(':idersc', $id);
-            // $stmt->bind_param('i', $id);
-            $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception("Error 'db.Dialog.php/deleteResource()' - ".$e->getMessage());
-        }
+    public static function getFolderContent($parentId) {
+        $con = Connect::DbConnect();
+        $query = "SELECT * FROM resource WHERE ideprt=:ideprt";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':ideprt', $parentId);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
+
+    // public static function getExistingResource($parentId) {
+    //     $con = Connect::DbConnect();
+    //     $query = "SELECT idersc, nmersc FROM resource WHERE ideprt=:ideprt";
+    //     $stmt = $con->prepare($query);
+    //     $stmt->bindParam(':ideprt', $parentId);
+    //     // $stmt->bind_param('i', $parentId);
+    //     $stmt->execute();
+    //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     // Peut importe si $result est null, un dossier peut être vide !
+    //     // if (!$result) throw new Exception("Error 'db.Dialog.php/getExistingResource()' - result is null");
+
+    //     return $result;
+    // }
+
+    // public static function deleteResource($id) {
+    //     try {
+    //         $con = Connect::DbConnect();
+    //         $query = "DELETE FROM resource WHERE idersc=:idersc";
+    //         $stmt = $con->prepare($query);
+    //         $stmt->bindParam(':idersc', $id);
+    //         // $stmt->bind_param('i', $id);
+    //         $stmt->execute();
+    //     } catch (PDOException $e) {
+    //         throw new Exception("Error 'db.Dialog.php/deleteResource()' - ".$e->getMessage());
+    //     }
+    // }
 
 }
 

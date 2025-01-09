@@ -1,6 +1,12 @@
 // import { createEntireElement } from './organistionHTML.tempName';
 // const BASE_URL = 'https://api.drivegsb.local/index.php';
 
+/*------------------------------------------------------------------/
+/                                                                   /
+/                    Récupération des données                       /
+/                                                                   /
+/------------------------------------------------------------------*/
+
 /**
  *! Pour une sécurité complète il faut passer le site en https pour le mot de passe 
  *! passé en post soit masquer dans un paquet tracer par exemple. (wireshark)
@@ -10,7 +16,6 @@
  * @returns 
  */
 async function login(lgn, pwd) {
-    let BASE_URL = 'https://api.drivegsb.local/index.php';
     let response = await fetch(`${BASE_URL}/login`, {
         method: 'POST',
         headers: {
@@ -32,6 +37,12 @@ async function login(lgn, pwd) {
 
     return data.goTo;
 }
+
+/*------------------------------------------------------------------/
+/                                                                   /
+/                     Utilisation des données                       /
+/                                                                   /
+/------------------------------------------------------------------*/
 
 function form_login() {
 

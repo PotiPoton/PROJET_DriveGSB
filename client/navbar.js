@@ -1,5 +1,10 @@
+/*------------------------------------------------------------------/
+/                                                                   /
+/                    Récupération des données                       /
+/                                                                   /
+/------------------------------------------------------------------*/
+
 async function getUser() {
-    let BASE_URL = 'https://api.drivegsb.local/index.php';
     let response = await fetch(`${BASE_URL}/user`, {
         method: 'POST',
         headers: {
@@ -18,7 +23,6 @@ async function getUser() {
 }
 
 async function updateFileStructure() {
-    let BASE_URL = 'https://api.drivegsb.local/index.php';
     let response = await fetch(`${BASE_URL}/updateFileStructure`, {
         method: 'POST',
         headers: {
@@ -37,13 +41,11 @@ async function updateFileStructure() {
     }    
 }
 
-// updateFileStructure().then(data => {
-//     if (data === 'login') {
-//         // document.getElementById('nav').remove();
-//         document.body.appendChild(createEntireElement('script', {src: './login.js'}));
-//         console.error('user not logged (token invalid or null)');
-//     }
-// }).catch(error => { console.error(error); });
+/*------------------------------------------------------------------/
+/                                                                   /
+/                     Utilisation des données                       /
+/                                                                   /
+/------------------------------------------------------------------*/
 
 function checkLogin(data){
     if (data === "login") {
@@ -60,7 +62,8 @@ async function navbar(){
     
     document.title = 'Accueil';
     let navElements = {
-        "home": "Accueil"
+        "home": "Accueil",
+        "fileExplorer": "Naviguer"
     }
 
     let nav = createEntireElement('nav', {id: 'navbar'});
@@ -68,31 +71,32 @@ async function navbar(){
     
     nav.appendChild(h1);
 
-    Object.entries(navElements).forEach(([dataTab, affichage]) => {
+    Object.entries(navElements).forEach(([key, value]) => {
         let a = createEntireElement('a', {
-            id: (dataTab == 'home') ? 'active' : undefined,
-            name: dataTab, 
+            id: (key == 'home') ? 'active' : undefined,
+            name: key, 
             class: 'tab-link', 
-            innerText: affichage
+            innerText: value
         });
         nav.appendChild(a);
     });
 
-    let updateFSButton = createEntireElement('input', {
-        type: 'submit', 
-        value: 'Update File structure',
-        class: 'bottom', 
-        onclick: async function (e) {
-            e.preventDefault();
+    //* Temporaire -> à déplacer ailleur au format automatique (et non un bouton !) 
+    // let updateFSButton = createEntireElement('input', {
+    //     type: 'submit', 
+    //     value: 'Update File structure',
+    //     class: 'bottom', 
+    //     onclick: async function (e) {
+    //         e.preventDefault();
 
-            let data = await updateFileStructure();
-            try { checkLogin(data); } catch (error) { throw error; }
-        }
-    });
+    //         let data = await updateFileStructure();
+    //         try { checkLogin(data); } catch (error) { throw error; }
+    //     }
+    // });
+    // nav.appendChild(updateFSButton);
 
-    nav.appendChild(updateFSButton);
-
-    document.body.appendChild(nav);
+    return nav;
+    // document.body.appendChild(nav);
 }
 
 function displayTab(){
@@ -110,6 +114,7 @@ function displayTab(){
         let script = createEntireElement('script', {id: 'dynamic-script', src: `./${tabName}.js`});
         
         // Ajouter le script en bas de la page
+        // return script;
         document.body.appendChild(script);
     }
 
@@ -144,57 +149,21 @@ function displayTab(){
     });
 }
 
+async function init() {
+    try {
+      const nav = await navbar();
+      document.body.appendChild(nav);
+      await displayTab();
+    } catch (error) {
+      console.error(error);
+    }
+}
+  
+init();
 
-navbar()
-// displayTab();
+// navbar().then(nav => { document.body.appendChild(nav); }).catch(error => { console.error(error); });
 
-
-// async function showUsers() {
-//     let users = await home();
-//     if (users === 'login') {
-//         document.getElementById('nav').remove();
-//         document.body.appendChild(createEntireElement('script', {src: './login.js'}));
-//         throw new Error('user not logged (token invalid or null)');
-//     }
-    
-//     // table
-//     let table = createEntireElement('table');
-//     // table head
-//     let thead = createEntireElement('thead');
-//     let trHead = createEntireElement('tr');
-//     Object.keys(users[0]).forEach(key => {
-//         let th = createEntireElement('th', {innerText: key})
-//         trHead.appendChild(th);
-//     });
-//     thead.appendChild(trHead);
-//     table.appendChild(thead);
-    
-//     // table body
-//     let tbody = createEntireElement('tbody');
-
-//     users.forEach(user => {
-//         let tr = createEntireElement('tr');
-//         Object.values(user).forEach(value => {
-//             let td = createEntireElement('td', {innerText: value});
-//             tr.appendChild(td);
-//         });
-//         tbody.appendChild(tr);
-//     })
-//     table.appendChild(tbody);
-
-//     // container content
-//     let cnt = createEntireElement('div', {class: 'cnt box'});
-//     let h2 = createEntireElement('h2', {innerText: 'Liste des utilisateurs'});
-
-//     cnt.appendChild(h2);
-//     cnt.appendChild(table);
-
-//     return cnt;
-// }
-
-
-// showUsers().then(cnt => {
-//     document.body.appendChild(cnt);
-// }).catch(error => {
-//     console.error('Error', error);
-// });
+// //Y'a un monde ou display tab ne fonctionne pas car le chargement de la page se fait trop vite
+// //Essayer de placer un point d'arret dans la fonction, et elle fonctionne 
+// //Problème d'async ???????????????
+// displayTab().catch(error => { console.error(error); });

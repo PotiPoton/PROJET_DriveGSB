@@ -112,52 +112,53 @@ function getIdeFromToken($jwt) {
 /                                                                               /
 /------------------------------------------------------------------------------*/
 
-function getFolderStructure($dirPath) {
-    $structure = [];
-    $items = scandir($dirPath); // Récupère tous les éléments du dossier
+//!old
+// function getFolderStructure($dirPath) {
+//     $structure = [];
+//     $items = scandir($dirPath); // Récupère tous les éléments du dossier
 
-    if (!$items) throw new Exception('Aucun éléments existant');
+//     if (!$items) throw new Exception('Aucun éléments existant');
 
-    foreach ($items as $item) {
-        if ($item === '.' || $item === '..') continue;
+//     foreach ($items as $item) {
+//         if ($item === '.' || $item === '..') continue;
 
-        $itemPath = $dirPath . DIRECTORY_SEPARATOR . $item;
-        $info = [
-            'name' => $item,
-            // 'path' =>realpath($itemPath),
-            'size' => formatSize(filesize($itemPath)),
-            'lastModified' => date('Y-m-d H:i:s', filemtime($itemPath))
-        ];
+//         $itemPath = $dirPath . DIRECTORY_SEPARATOR . $item;
+//         $info = [
+//             'name' => $item,
+//             // 'path' =>realpath($itemPath),
+//             'size' => formatSize(filesize($itemPath)),
+//             'lastModified' => date('Y-m-d H:i:s', filemtime($itemPath))
+//         ];
 
-        if (is_dir($itemPath)) {
-            $info['type'] = 'folder';
-            // $info['children'] = getFolderStructure($itemPath);
-            // Ici pas de formatSize(getFolderSize($itemPath)); car cela retournerais "0 o" par ex, or pour la db c'est INT et non VARCAHR
-            $info['size'] = getFolderSize($itemPath);
-        } else {
-            $info['type'] = 'file';
-        }
+//         if (is_dir($itemPath)) {
+//             $info['type'] = 'folder';
+//             // $info['children'] = getFolderStructure($itemPath);
+//             // Ici pas de formatSize(getFolderSize($itemPath)); car cela retournerais "0 o" par ex, or pour la db c'est INT et non VARCAHR
+//             $info['size'] = getFolderSize($itemPath);
+//         } else {
+//             $info['type'] = 'file';
+//         }
 
-        $structure[] = $info;
-    }
+//         $structure[] = $info;
+//     }
 
-    return $structure;
-}
+//     return $structure;
+// }
 
-function formatSize($size) {
+// function formatSize($size) {
 
-    // if (!$size) throw new Exception('API/functions.php/formatSize() => size is null');
+//     // if (!$size) throw new Exception('API/functions.php/formatSize() => size is null');
 
-    $units = ['o', 'Ko', 'Mo', 'Go', 'To'];
-    $unitIndex = 0;
+//     $units = ['o', 'Ko', 'Mo', 'Go', 'To'];
+//     $unitIndex = 0;
 
-    while ($size >= 1024 && $unitIndex < count($units) - 1) {
-        $size /= 1024;
-        $unitIndex++;
-    }
+//     while ($size >= 1024 && $unitIndex < count($units) - 1) {
+//         $size /= 1024;
+//         $unitIndex++;
+//     }
 
-    return round($size, 2) . ' ' . $units[$unitIndex];
-}
+//     return round($size, 2) . ' ' . $units[$unitIndex];
+// }
 
 function getFolderSize($dirPath) {
     $totalSize = 0;

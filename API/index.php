@@ -85,6 +85,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    else if ($requestUri === '/index.php/folder') {
+        $token = $_COOKIE['auth_token'] ?? null;
+
+        $idersc = $_POST['idersc'] ?? null;
+
+        try {
+            checkToken($token);
+            $folderContent = $resource->getFolder($idersc);
+            echo json_encode(['status' => 'success', 'content' => $folderContent]);
+        } catch (Exception $e) {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
     else if ($requestUri === '/index.php/updateFileStructure') {
         $token = $_COOKIE['auth_token'] ?? null;
         

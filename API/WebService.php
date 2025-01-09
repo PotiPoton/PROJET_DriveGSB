@@ -111,6 +111,11 @@ class Resource {
         }
     }
 
+    public function getFolder($idersc) {
+        if (empty($idersc) || $idersc === 'null') return Dialog::getRootContent();
+        else return Dialog::getFolderContent($idersc);
+    }
+
     //!old
     // public function getRootFolder(){
     //     $folderStructure = getFolderStructure($this->root);
