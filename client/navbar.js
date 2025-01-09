@@ -47,13 +47,13 @@ async function updateFileStructure() {
 /                                                                   /
 /------------------------------------------------------------------*/
 
-function checkLogin(data){
-    if (data === "login") {
-        if (document.getElementById('nav')) document.getElementById('nav').remove();
-        document.body.appendChild(createEntireElement('script', {src: './login.js'}));
-        throw new Error('user not logged (token invalid or null)');
-    }
-}
+// function checkLogin(data){
+//     if (data === "login") {
+//         if (document.getElementById('nav')) document.getElementById('nav').remove();
+//         document.body.appendChild(createEntireElement('script', {src: './login.js'}));
+//         throw new Error('user not logged (token invalid or null)');
+//     }
+// }
 
 async function navbar(){
     

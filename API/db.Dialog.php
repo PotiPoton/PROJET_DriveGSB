@@ -65,9 +65,11 @@ class Dialog {
 
 /*----------------------------------------------------------------------------- /
 /                                                                               /
-/                                 Resource                                      /
+/                                  Resource                                     /
 /                                                                               /
 /------------------------------------------------------------------------------*/
+
+
 
     public static function checkIfResourceExists($item, $parentId) {
         $con = Connect::DbConnect();
@@ -81,6 +83,15 @@ class Dialog {
         $result = $stmt->fetch(PDO::FETCH_OBJ);
         
         return $result;
+    }
+
+    public static function getResource($idersc) {
+        $con = Connect::DbConnect();
+        $query = "SELECT * FROM resource WHERE idersc=:idersc";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':idersc', $idersc);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
     public static function updateResource($result, $size, $lastModified) {
@@ -128,6 +139,12 @@ class Dialog {
         }
     }
 
+
+
+        /*--------------------------------------------------------------/
+        /                            Folder                             /
+        /--------------------------------------------------------------*/
+
     public static function getRootContent() {
         $con = Connect::DbConnect();
         $query = "SELECT * FROM resource WHERE ideprt IS NULL";
@@ -146,6 +163,12 @@ class Dialog {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+        /*--------------------------------------------------------------/
+        /                             File                              /
+        /--------------------------------------------------------------*/
+
+
 
     // public static function getExistingResource($parentId) {
     //     $con = Connect::DbConnect();

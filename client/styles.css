@@ -68,6 +68,19 @@ a:hover{ text-decoration: none; color: #ffffff; cursor: pointer;}
     box-sizing: border-box; /* Prend en compte le padding et la bordure dans la taille */
 }
 
+/** Modal */
+.cnt.box.modal { box-shadow: 0 0 15px rgba(0, 0, 0, 0.6); font-size: 15px;
+    transform: translateY(-20px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; }
+
+.modal-overlay.show .cnt.box.modal {
+    transform: translateY(0); /* Position normale */
+    opacity: 1;
+}
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; 
+    justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.modal-overlay.show { opacity: 1; visibility: visible; }
+
 /** Parcours */
 .parcours > .date { display: inline-block; background: #63593b; border-radius: 6px; width: fit-content; padding: 10px; margin: 30px; }
 .parcours > .desc { display: inline-block; background: #63593b; border-radius: 6px; width: fit-content; padding: 10px; margin: 30px; }

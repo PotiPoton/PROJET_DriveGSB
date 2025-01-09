@@ -111,34 +111,38 @@ class Resource {
         }
     }
 
-    public function getFolder($idersc) {
+    public function getFolderContent($idersc) {
         if (empty($idersc) || $idersc === 'null') return Dialog::getRootContent();
         else return Dialog::getFolderContent($idersc);
     }
 
-    //!old
-    // public function getRootFolder(){
-    //     $folderStructure = getFolderStructure($this->root);
-    //     return $folderStructure;
-    // }
-
-    // public function getFolder($path){
-    //     try{
-    //         $completePath = $this->root.'\\'.$path;
-    //         $folderStructure = getFolderStructure($completePath);
-    //         return $folderStructure;
-    //     } catch(Exception $e) {
-    //         throw new Exception("impossible de récupérer le dossier demandé".$e->getMessage());
-    //     }
-    // }
-}
-
-class file {
-
-    public function getFile($path, $file) {
-        
+    public function getResource($idersc) {
+        return Dialog::getResource($idersc);
     }
+
+    public function getFileContent($idersc) {
+        $path = $this->getPath($idersc);
+        if (!file_exists($path)) throw new Exception("Le fichier n'existe pas");
+        return file_get_contents($path);
+    }
+
+    private function getPath($idersc) {
+        $resource = Dialog::getResource($idersc);
+        $path = "";
+
+        while ($resource) {
+            $path = "\\$resource->nmersc" . $path;
+            $resource = Dialog::getResource($resource->ideprt);
+        }
+
+        return $this->root.$path;
+    }
+
 }
 
+// $idersc = 5;
+// $resource = new Resource('C:\\Users\\PotiPoton\\Documents\\Informatique\\Arbo de test');
+// $test = $resource->getFile($idersc);
+// echo $test;
 
 ?>

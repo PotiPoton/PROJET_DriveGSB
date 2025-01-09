@@ -29,6 +29,31 @@ async function getFolder(idersc) {
     return data.content;
 }
 
+/**
+ * Récupère sur l'API le contenue d'un fichier
+ * 
+ * @param {int} idersc L'identifiant d'un fichier dont il faut le contenue
+ * @returns Le contenue du fichier
+ */
+async function getFile(idersc) {
+    let response = await fetch(`${BASE_URL}/file`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `idersc=${idersc}`,
+        credentials: 'include'
+    });
+
+    let data = await response.json();
+    if(data.status === 'error') {
+        if (data.message.includes('token')) return 'login';
+        throw new Error(data.message);
+    }
+    
+    return data;
+}
+
 /*------------------------------------------------------------------/
 /                                                                   /
 /                     Utilisation des données                       /
@@ -43,11 +68,20 @@ function clearTable() {
     if (existingTable) existingTable.remove();
 }
 
-// async function showFile(currentPath, file) {
-//     let gettedFile = await getFile(currentPath, file);
+/**
+ * Génère un modal avec le contenue d'un fichier
+ * 
+ * @param {int} idersc Identifiant de la ressource
+ */
+async function showFile(idersc) {
+    let file = await getFile(idersc);
 
-//     let temp = createEntireElement('div', {innerText: gettedFile});
-// }
+    try { checkLogin(file); } catch (error) { throw error; }
+
+    let content = createEntireElement('p', { innerText: file.content });
+
+    createModal('file', file.file.nmersc, content);
+}
 
 /**
  * met à jour l'historique de navigation du local storage du navigateur.
@@ -81,7 +115,7 @@ function previousFolder() {
 
     return createEntireElement('tr', { child: [
         createEntireElement('td', {
-            innerText: "Dossier précédent",
+            innerText: "⤶ Dossier précédent",
             colspan: 3,
             onclick: async function () {
                 let previous = updateHistory(true);
@@ -123,10 +157,6 @@ function getHead(resources) {
  * @returns Le corps d'un tableau
  */
 function getBody(resources) {
-
-    // TODO: icones 📁 📄
-
-
     return createEntireElement('tbody', { child: [
         previousFolder(),
         ...Object.values(resources).map(resource => {
@@ -139,8 +169,7 @@ function getBody(resources) {
                     createEntireElement('td', { innerText: resource.lstmod ?? "" })
                 ],
                 onclick: async function () {
-                    updateHistory(false, resource.idersc)
-                    if (resource.tpe === 'folder') await showFolder(resource.idersc); 
+                    if (resource.tpe === 'folder') { updateHistory(false, resource.idersc); await showFolder(resource.idersc); } 
                     else await showFile(resource.idersc);
                 }
             });
@@ -158,6 +187,8 @@ async function showFolder(idersc = null){
 
     try {
         let folders = await getFolder(idersc);
+
+        try { checkLogin(folders); } catch (error) { throw error; }
 
         if (!folders || folders.length === 0) {
             document.getElementById('content').appendChild(
